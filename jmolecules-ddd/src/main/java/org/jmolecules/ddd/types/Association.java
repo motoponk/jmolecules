@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 the original author or authors.
+ * Copyright 2020-2021 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,4 +27,42 @@ package org.jmolecules.ddd.types;
  * @see <a href="https://scabl.blogspot.com/2015/04/aeddd-9.html>John Sullivan - Advancing Enterprise DDD - Reinstating
  *      the Aggregate</a>
  */
-public interface Association<T extends AggregateRoot<T, ID>, ID extends Identifier> extends Identifiable<ID> {}
+public interface Association<T extends AggregateRoot<T, ID>, ID extends Identifier> extends Identifiable<ID> {
+
+	/**
+	 * Creates an {@link Association} pointing to the {@link Identifier} of the given {@link AggregateRoot}.
+	 *
+	 * @param <T> the concrete {@link AggregateRoot} type.
+	 * @param <ID> the concrete {@link Identifier} type.
+	 * @param aggregate must not be {@literal null}.
+	 * @return an {@link Association} pointing to the {@link Identifier} of the given {@link AggregateRoot}, will never be
+	 *         {@literal null}.
+	 * @since 1.2
+	 */
+	static <T extends AggregateRoot<T, ID>, ID extends Identifier> Association<T, ID> forAggregate(T aggregate) {
+
+		if (aggregate == null) {
+			throw new IllegalArgumentException("Aggregate must not be null!");
+		}
+
+		return () -> aggregate.getId();
+	}
+
+	/**
+	 * Creates an {@link Association} pointing to the given {@link Identifier}.
+	 *
+	 * @param <T> the concrete {@link AggregateRoot} type.
+	 * @param <ID> the concrete {@link Identifier} type.
+	 * @param identifier must not be {@literal null}.
+	 * @return an {@link Association} pointing to the given {@link Identifier}, will never be {@literal null}.
+	 * @since 1.2
+	 */
+	static <T extends AggregateRoot<T, ID>, ID extends Identifier> Association<T, ID> forId(ID identifier) {
+
+		if (identifier == null) {
+			throw new IllegalArgumentException("Identifier must not be null!");
+		}
+
+		return () -> identifier;
+	}
+}
